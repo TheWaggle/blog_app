@@ -10,7 +10,7 @@ defmodule BlogAppWeb.ArticleLive.Summary do
     </.header>
 
     <div :for={article <- @articles} class="mt-2">
-      <a>
+      <a href={~p"/articles/show/#{article.id}"}>
         <div><%= article.account.name %></div>
         <div><%= article.submit_date %></div>
         <h2><%= article.title %></h2>

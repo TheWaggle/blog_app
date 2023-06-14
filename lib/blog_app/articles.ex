@@ -9,4 +9,11 @@ defmodule BlogApp.Articles do
     |> preload(:account)
     |> Repo.all
   end
+
+  def get_article!(id) do
+    Article
+    |> where([a], a.id == ^id)
+    |> preload(:account)
+    |> Repo.one()
+  end
 end
