@@ -20,7 +20,11 @@ defmodule BlogAppWeb.Router do
   scope "/", BlogAppWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    # get "/", PageController, :home
+
+    live_session :home_authenticated, on_mount: [{BlogAppWeb.AccountAuth, :mount_current_account}] do
+      live "/", ArticleLive.Summary, :summary
+    end
   end
 
   # Other scopes may use custom stacks.
