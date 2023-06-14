@@ -73,6 +73,9 @@ defmodule BlogAppWeb.Router do
       on_mount: [{BlogAppWeb.AccountAuth, :ensure_authenticated}] do
       live "/accounts/settings", AccountSettingsLive, :edit
       live "/accounts/settings/confirm_email/:token", AccountSettingsLive, :confirm_email
+
+      live "/articles/new", ArticleLive.Form, :new
+      live "/articles/:article_id/edit", ArticleLive.Form, :edit
     end
   end
 

@@ -16,4 +16,20 @@ defmodule BlogApp.Articles do
     |> preload(:account)
     |> Repo.one()
   end
+
+  def create_article(attrs \\ %{}) do
+    %Article{}
+    |> Article.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_article(%Article{} = article, attrs) do
+    article
+    |> Article.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def change_article(%Article{} = article, attrs \\ %{}) do
+    Article.changeset(article, attrs)
+  end
 end
