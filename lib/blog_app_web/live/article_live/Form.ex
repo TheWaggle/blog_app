@@ -43,6 +43,7 @@ defmodule BlogAppWeb.ArticleLive.Form do
 
   def handle_event("validate", %{"article" => params}, socket) do
     cs = Articles.change_article(socket.assigns.article, params)
+    
     {:noreply, assign_form(socket, cs)}
   end
 
