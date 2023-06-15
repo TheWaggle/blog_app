@@ -13,7 +13,7 @@ defmodule BlogApp.Articles do
   def get_article!(id) do
     Article
     |> where([a], a.id == ^id)
-    |> preload(:account)
+    |> preload([:account, comments: [:account]])
     |> Repo.one()
   end
 

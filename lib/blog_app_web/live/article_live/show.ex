@@ -15,10 +15,19 @@ defmodule BlogAppWeb.ArticleLive.Show do
       <h2><%= @article.title %></h2>
       <div><%= @article.body %></div>
     </div>
+
+    <div class="mt-4">
+      <h3>コメント</h3>
+      <div :for={comment <- @article.comments} class="mt-2 border-b">
+        <a><%= comment.account.name %></a>
+        <div><%= Calendar.strftime(comment.inserted_at, "%c") %></div>
+        <div><%= comment.body %></div>
+      </div>
+    </div>
     """
   end
 
-  def mount(%{"article_id" => article_id}, _session, socket) do
+  def mount(_params, _session, socket) do
     {:ok, socket}
   end
 

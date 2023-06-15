@@ -3,6 +3,7 @@ defmodule BlogApp.Articles.Article do
   import Ecto.Changeset
 
   alias BlogApp.Accounts.Account
+  alias BlogApp.Articles.Comment
 
   schema "articles" do
     field :body, :string
@@ -12,6 +13,8 @@ defmodule BlogApp.Articles.Article do
     belongs_to :account, Account
 
     timestamps()
+
+    has_many :comments, Comment
   end
 
   @doc false
