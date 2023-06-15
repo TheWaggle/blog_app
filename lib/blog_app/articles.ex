@@ -2,6 +2,7 @@ defmodule BlogApp.Articles do
   import Ecto.Query
   alias BlogApp.Repo
   alias BlogApp.Articles.Article
+  alias BlogApp.Articles.Comment
 
   def list_articles() do
     Article
@@ -31,5 +32,17 @@ defmodule BlogApp.Articles do
 
   def change_article(%Article{} = article, attrs \\ %{}) do
     Article.changeset(article, attrs)
+  end
+
+  # Comments
+
+  def create_comment(attrs \\ %{}) do
+    %Comment{}
+    |> Comment.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def change_comment(%Comment{} = comment, attrs \\ %{}) do
+    Comment.changeset(comment, attrs)
   end
 end
