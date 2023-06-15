@@ -9,6 +9,16 @@ defmodule BlogAppWeb.ArticleLive.Summary do
       Listing Articles
     </.header>
 
+    <div>
+      <.simple_form for={@form} phx-change="search_articles">
+        <.input
+          field={@form["keyword"]}
+          type="text"
+          placeholder="Search articles"
+        />
+      </.simple_form>
+    </div>
+
     <div :for={article <- @articles} class="mt-2">
       <a href={~p"/articles/show/#{article.id}"}>
         <div><%= article.account.name %></div>
@@ -25,7 +35,21 @@ defmodule BlogAppWeb.ArticleLive.Summary do
       socket
       |> assign(:articles, Articles.list_articles())
       |> assign(:page_title, "blog")
+      |> assign_form()
 
     {:ok, socket}
+  end
+
+  def handle_event("search_articles", %{"search_article" => %{"keyword" => keyword}}, socket) do
+    socket =
+      socket
+      |> assign(:articles, Articles.search_articles_by_keyword(keyword))
+      |> assign_form()
+
+    {:noreply, socket}
+  end
+
+  defp assign_form(socket) do
+    assign(socket, :form, to_form(%{}, as: "search_article"))
   end
 end

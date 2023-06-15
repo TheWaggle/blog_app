@@ -12,6 +12,19 @@ defmodule BlogApp.Articles do
     |> Repo.all
   end
 
+  def search_articles_by_keyword(keyword) do
+    keyword = "%#{keyword}%"
+
+    query =
+      from(a in Article,
+        where: a.status == 1,
+        where: like(a.body, ^keyword) or like(a.title, ^keyword),
+        preload: [:account, :likes]
+      )
+
+    Repo.all(query)
+  end
+
   def get_article!(id) do
     Article
     |> where([a], a.id == ^id)
