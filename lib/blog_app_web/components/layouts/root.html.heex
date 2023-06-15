@@ -18,7 +18,9 @@
       </li>
       <%= if @current_account do %>
         <li class="text-[0.8125rem] leading-6 text-zinc-900">
-          <%= @current_account.email %>
+          <.link href={~p"/accounts/profile/#{@current_account.id}"}>
+            <%= @current_account.email %>
+          </.link>
         </li>
         <li>
           <.link

@@ -20,8 +20,10 @@ defmodule BlogAppWeb.ArticleLive.Summary do
     </div>
 
     <div :for={article <- @articles} class="mt-2">
+      <a href={~p"/accounts/profile/#{article.account_id}"}>
+        <%= article.account.name %>
+      </a>
       <a href={~p"/articles/show/#{article.id}"}>
-        <div><%= article.account.name %></div>
         <div><%= article.submit_date %></div>
         <h2><%= article.title %></h2>
         <div>Liked：<%= Enum.count(article.likes) %></div>

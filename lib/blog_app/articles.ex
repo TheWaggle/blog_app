@@ -12,6 +12,25 @@ defmodule BlogApp.Articles do
     |> Repo.all
   end
 
+  def list_articles_for_account(account_id, current_account_id) when account_id == current_account_id do
+    Article
+    |> where([a], a.status in [1, 2])
+    |> get_articles_for_account_by_query(account_id)
+  end
+
+  def list_articles_for_account(account_id, _current_account_id) do
+    Article
+    |> where([a], a.status == 1)
+    |> get_articles_for_account_by_query(account_id)
+  end
+
+  defp get_articles_for_account_by_query(query, account_id) do
+    query
+    |> where([a], a.account_id == ^account_id)
+    |> preload([:account, :likes])
+    |> Repo.all()
+  end
+
   def search_articles_by_keyword(keyword) do
     keyword = "%#{keyword}%"
 

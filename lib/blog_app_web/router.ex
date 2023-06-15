@@ -25,6 +25,7 @@ defmodule BlogAppWeb.Router do
     live_session :home_authenticated, on_mount: [{BlogAppWeb.AccountAuth, :mount_current_account}] do
       live "/", ArticleLive.Summary, :summary
       live "/articles/show/:article_id", ArticleLive.Show, :show
+      live "/accounts/profile/:account_id", AccountPageLive, :info
     end
   end
 
