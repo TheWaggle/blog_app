@@ -19,13 +19,21 @@ defmodule BlogAppWeb.ArticleLive.Show do
   end
 
   def mount(%{"article_id" => article_id}, _session, socket) do
+    {:ok, socket}
+  end
+
+  def handle_params(%{"article_id" => article_id}, _uri, socket) do
     article = Articles.get_article!(article_id)
 
     socket =
-      socket
-      |> assign(:article, article)
-      |> assign(:page_title, article.title)
+      unless article.status == 0 do
+        socket
+        |> assign(:article, article)
+        |> assign(:page_title, article.title)
+      else
+        redirect(socket, to: ~p"/")
+      end
 
-    {:ok, socket}
+    {:noreply, socket}
   end
 end
