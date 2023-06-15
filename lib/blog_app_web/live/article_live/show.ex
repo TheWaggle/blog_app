@@ -14,6 +14,7 @@ defmodule BlogAppWeb.ArticleLive.Show do
       <a><%= @article.account.name %></a>
       <div><%= @article.submit_date %></div>
       <h2><%= @article.title %></h2>
+      <div>Liked：<%= Enum.count(@article.likes) %></div>
       <div><%= @article.body %></div>
     </div>
 

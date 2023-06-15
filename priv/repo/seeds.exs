@@ -2,6 +2,7 @@ alias BlogApp.Repo
 alias BlogApp.Accounts.Account
 alias BlogApp.Articles.Article
 alias BlogApp.Articles.Comment
+alias BlogApp.Articles.Like
 
 params = [
   {"user01", "user01@sample.com", "user01999"},
@@ -54,6 +55,15 @@ Repo.insert!(
     article_id: article.id
   }
 )
+
+Enum.each([a02, a03], fn account ->
+  Repo.insert!(
+    %Like{
+      account_id: account.id,
+      article_id: article.id
+    }
+  )
+end)
 
 Repo.insert!(
   %Article{

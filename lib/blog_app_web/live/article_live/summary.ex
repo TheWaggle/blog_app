@@ -14,6 +14,7 @@ defmodule BlogAppWeb.ArticleLive.Summary do
         <div><%= article.account.name %></div>
         <div><%= article.submit_date %></div>
         <h2><%= article.title %></h2>
+        <div>Liked：<%= Enum.count(article.likes) %></div>
       </a>
     </div>
     """

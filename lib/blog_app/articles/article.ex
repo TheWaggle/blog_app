@@ -4,6 +4,7 @@ defmodule BlogApp.Articles.Article do
 
   alias BlogApp.Accounts.Account
   alias BlogApp.Articles.Comment
+  alias BlogApp.Articles.Like
 
   schema "articles" do
     field :body, :string
@@ -15,6 +16,7 @@ defmodule BlogApp.Articles.Article do
     timestamps()
 
     has_many :comments, Comment
+    has_many :likes, Like
   end
 
   @doc false

@@ -7,14 +7,14 @@ defmodule BlogApp.Articles do
   def list_articles() do
     Article
     |> where([a], a.status == 1)
-    |> preload(:account)
+    |> preload([:account, :likes])
     |> Repo.all
   end
 
   def get_article!(id) do
     Article
     |> where([a], a.id == ^id)
-    |> preload([:account, comments: [:account]])
+    |> preload([:account, :likes, comments: [:account]])
     |> Repo.one()
   end
 
