@@ -25,7 +25,7 @@ defmodule BlogApp.Articles.Article do
     cs =
       validate_required(cs, :title, message: "Please fill in the title.")
 
-    unless get_change(cs, :status, 0) == 0 do
+    unless get_field(cs, :status, 0) == 0 do
       cs
       |> change(%{submit_date: Date.utc_today()})
       |> validate_required(:body, message: "Please fill in the body.")
