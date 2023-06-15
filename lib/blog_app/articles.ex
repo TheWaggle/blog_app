@@ -3,6 +3,7 @@ defmodule BlogApp.Articles do
   alias BlogApp.Repo
   alias BlogApp.Articles.Article
   alias BlogApp.Articles.Comment
+  alias BlogApp.Articles.Like
 
   def list_articles() do
     Article
@@ -44,5 +45,13 @@ defmodule BlogApp.Articles do
 
   def change_comment(%Comment{} = comment, attrs \\ %{}) do
     Comment.changeset(comment, attrs)
+  end
+
+  # Likes
+
+  def create_like(article_id, account_id) do
+    %Like{}
+    |> Like.changeset(%{"article_id" => article_id, "account_id" => account_id})
+    |> Repo.insert()
   end
 end

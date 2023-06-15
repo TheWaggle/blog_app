@@ -16,6 +16,17 @@ defmodule BlogAppWeb.ArticleLive.Show do
       <h2><%= @article.title %></h2>
       <div>Liked：<%= Enum.count(@article.likes) %></div>
       <div><%= @article.body %></div>
+      <div
+        phx-click="like_article"
+        phx-value-account_id={@current_account_id}
+        :if={
+          @current_account &&
+          (@current_account_id != @article.account_id and
+          @current_account_id not in Enum.map(@article.likes, & &1.account_id))
+        }
+      >
+        Like
+      </div>
     </div>
 
     <div class="mt-4">
@@ -93,6 +104,12 @@ defmodule BlogAppWeb.ArticleLive.Show do
       end
 
     {:noreply, socket}
+  end
+
+  def handle_event("like_article", %{"account_id" => account_id}, socket) do
+    Articles.create_like(socket.assigns.article.id, account_id)
+
+    {:noreply, assign(socket, :article, Articles.get_article!(socket.assigns.article.id))}
   end
 
   defp assign_form(socket, cs) do
