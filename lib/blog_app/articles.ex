@@ -31,6 +31,14 @@ defmodule BlogApp.Articles do
     |> Repo.all()
   end
 
+  def list_draft_articles_for_account(account_id) do
+    Article
+    |> where([a], a.account_id == ^account_id)
+    |> where([a], a.status == 0)
+    |> preload(:account)
+    |> Repo.all()
+  end
+
   def search_articles_by_keyword(keyword) do
     keyword = "%#{keyword}%"
 

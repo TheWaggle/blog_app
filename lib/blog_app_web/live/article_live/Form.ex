@@ -43,7 +43,7 @@ defmodule BlogAppWeb.ArticleLive.Form do
 
   def handle_event("validate", %{"article" => params}, socket) do
     cs = Articles.change_article(socket.assigns.article, params)
-    
+
     {:noreply, assign_form(socket, cs)}
   end
 
@@ -72,6 +72,11 @@ defmodule BlogAppWeb.ArticleLive.Form do
 
   defp save_article(socket, :edit, params) do
     case Articles.update_article(socket.assigns.article, params) do
+      {:ok, %Article{status: 0} = article} ->
+        socket
+        |> put_flash(:info, "Article saved successfully.")
+        |> redirect(to: ~p"/accounts/profile/#{socket.assigns.current_account.id}/draft")
+
       {:ok, article} ->
         socket
         |> put_flash(:info, "Article updated successfully.")
@@ -88,10 +93,9 @@ defmodule BlogAppWeb.ArticleLive.Form do
 
     case Articles.create_article(params) do
       {:ok, %Article{status: 0} = article} ->
-        IO.inspect(article)
         socket
         |> put_flash(:info, "Article saved successfully.")
-        |> redirect(to: ~p"/")
+        |> redirect(to: ~p"/accounts/profile/#{current_account_id}/draft")
 
       {:ok, article} ->
         socket

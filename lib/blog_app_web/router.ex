@@ -77,6 +77,7 @@ defmodule BlogAppWeb.Router do
 
       live "/articles/new", ArticleLive.Form, :new
       live "/articles/:article_id/edit", ArticleLive.Form, :edit
+      live "/accounts/profile/:account_id/draft", AccountPageLive, :draft
     end
   end
 

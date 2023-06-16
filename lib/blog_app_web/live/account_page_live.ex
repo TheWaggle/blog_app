@@ -19,6 +19,9 @@ defmodule BlogAppWeb.AccountPageLive do
     <div>
       <div>
         <a href={~p"/accounts/profile/#{@account.id}"}>Articles</a>
+        <a href={~p"/accounts/profile/#{@account.id}/draft"} :if={@account.id == @current_account_id}>
+          Draft
+        </a>
       </div>
 
       <div>
@@ -27,15 +30,25 @@ defmodule BlogAppWeb.AccountPageLive do
             <a href={~p"/accounts/profile/#{article.account.id}"}>
               <%= article.account.name %>
             </a>
-            <a href={~p"/articles/show/#{article.id}"}>
+            <a href={~p"/articles/show/#{article.id}"} :if={@live_action == :info}>
               <div><%= article.submit_date %></div>
               <h2><%= article.title %></h2>
               <div>Liked：<%= Enum.count(article.likes) %></div>
             </a>
+
+            <a href={~p"/articles/#{article.id}/edit"} :if={@live_action == :draft}>
+              <div><%= article.title %></div>
+              <div :if={article.body}><%= String.slice(article.body, 0..30) %></div>
+            </a>
           </div>
         <% else %>
           <div>
-            No articles
+            <%=
+              case @live_action do
+                :info -> "No articles"
+                :draft -> "No draft articles"
+              end
+            %>
           </div>
         <% end %>
       </div>
@@ -69,6 +82,27 @@ defmodule BlogAppWeb.AccountPageLive do
     |> assign(:articles_count, Enum.count(articles))
     |> assign(:current_account_id, current_account_id)
     |> assign(:page_title, account.name)
+  end
+
+  defp apply_action(socket, :draft) do
+    account = socket.assigns.account
+    current_account = socket.assigns.current_account
+    current_account_id = get_current_account_id(current_account)
+
+    if account.id == current_account_id do
+      articles_count =
+        current_account_id
+        |> Articles.list_articles_for_account(current_account_id)
+        |> Enum.count()
+
+      socket
+      |> assign(:articles, Articles.list_draft_articles_for_account(current_account_id))
+      |> assign(:articles_count, articles_count)
+      |> assign(:current_account_id, current_account_id)
+      |> assign(:page_title, account.name <> " - draft")
+    else
+      redirect(socket, to: ~p"/accounts/profile/#{account.id}")
+    end
   end
 
   defp get_current_account_id(current_account) do
