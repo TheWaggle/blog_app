@@ -41,6 +41,16 @@ defmodule BlogAppWeb.AccountPageLive do
               <div><%= article.title %></div>
               <div :if={article.body}><%= String.slice(article.body, 0..30) %></div>
             </a>
+
+            <%= if @live_action in [:info, :draft] do %>
+              <div phx-click="set_article_id" phx-value-article_id={article.id} :if={@account.id == @current_account_id}>
+                ...
+              </div>
+              <div :if={article.id == @set_article_id} >
+                <a href={~p"/articles/#{article.id}/edit"}>Edit</a>
+                <span phx-click="delete_article" phx-value-article_id={article.id}>Delete</span>
+              </div>
+            <% end %>
           </div>
         <% else %>
           <div>
@@ -80,6 +90,7 @@ defmodule BlogAppWeb.AccountPageLive do
 
     socket
     |> assign(:articles, articles)
+    |> assign(:set_article_id, nil)
     |> assign(:articles_count, Enum.count(articles))
     |> assign(:current_account_id, current_account_id)
     |> assign(:page_title, account.name)
@@ -92,6 +103,7 @@ defmodule BlogAppWeb.AccountPageLive do
     if account.id == current_account_id do
       socket
       |> assign(:articles, Articles.list_draft_articles_for_account(current_account_id))
+      |> assign(:set_article_id, nil)
       |> assign_article_count(account.id, current_account_id)
       |> assign(:current_account_id, current_account_id)
       |> assign(:page_title, account.name <> " - draft")
@@ -106,6 +118,7 @@ defmodule BlogAppWeb.AccountPageLive do
 
     socket
     |> assign(:articles, Articles.list_liked_articles_for_account(account.id))
+    |> assign(:set_article_id, nil)
     |> assign_article_count(account.id, current_account_id)
     |> assign(:current_account_id, current_account_id)
     |> assign(:page_title, account.name <> " - liked")
@@ -122,5 +135,41 @@ defmodule BlogAppWeb.AccountPageLive do
       |> Enum.count()
 
     assign(socket, :articles_count, articles_count)
+  end
+
+  def handle_event("set_article_id", %{"article_id" => article_id}, socket) do
+    id =
+      unless article_id == "#{socket.assigns.set_article_id}", do: String.to_integer(article_id), else: nil
+
+    {:noreply, assign(socket, :set_article_id, id)}
+  end
+
+  def handle_event("delete_article", %{"article_id" => article_id}, socket) do
+    socket =
+      case Articles.delete_article(Articles.get_article!(article_id)) do
+        {:ok, _article} ->
+          assign_article_when_deleted(socket, socket.assigns.live_action)
+
+        {:error, _cs} ->
+          put_flash(socket, :error, "Could not article.")
+      end
+
+    {:noreply, socket}
+  end
+
+  defp assign_article_when_deleted(socket, :info) do
+    articles =
+      Articles.list_articles_for_account(socket.assigns.account.id, socket.assigns.current_account.id)
+
+    socket
+    |> assign(:articles, articles)
+    |> assign(:articles_count, Enum.count(articles))
+    |> put_flash(:info, "Article deleted successfully.")
+  end
+
+  defp assign_article_when_deleted(socket, :draft) do
+    socket
+    |> assign(:articles, Articles.list_draft_articles_for_account(socket.assigns.current_account.id))
+    |> put_flash(:info, "Draft article deleted successfully.")
   end
 end

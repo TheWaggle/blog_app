@@ -82,6 +82,10 @@ defmodule BlogApp.Articles do
     |> Repo.update()
   end
 
+  def delete_article(%Article{} = article) do
+    Repo.delete(article)
+  end
+
   def change_article(%Article{} = article, attrs \\ %{}) do
     Article.changeset(article, attrs)
   end
