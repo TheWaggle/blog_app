@@ -73,9 +73,13 @@ defmodule BlogAppWeb.AccountPageLive do
   end
 
   def handle_params(%{"account_id" => account_id}, _uri, socket) do
+    current_account_id = get_current_account_id(socket.assigns.current_account)
+
     socket =
       socket
       |> assign(:account, Accounts.get_account!(account_id))
+      |> assign(:set_article_id, nil)
+      |> assign(:current_account_id, get_current_account_id(socket.assigns.current_account))
       |> apply_action(socket.assigns.live_action)
 
     {:noreply, socket}
@@ -83,29 +87,25 @@ defmodule BlogAppWeb.AccountPageLive do
 
   defp apply_action(socket, :info) do
     account = socket.assigns.account
-    current_account_id = get_current_account_id(socket.assigns.current_account)
+    current_account_id = socket.assigns.current_account_id
 
     articles =
       Articles.list_articles_for_account(account.id, current_account_id)
 
     socket
     |> assign(:articles, articles)
-    |> assign(:set_article_id, nil)
     |> assign(:articles_count, Enum.count(articles))
-    |> assign(:current_account_id, current_account_id)
     |> assign(:page_title, account.name)
   end
 
   defp apply_action(socket, :draft) do
     account = socket.assigns.account
-    current_account_id = get_current_account_id(socket.assigns.current_account)
+    current_account_id = socket.assigns.current_account_id
 
     if account.id == current_account_id do
       socket
       |> assign(:articles, Articles.list_draft_articles_for_account(current_account_id))
-      |> assign(:set_article_id, nil)
       |> assign_article_count(account.id, current_account_id)
-      |> assign(:current_account_id, current_account_id)
       |> assign(:page_title, account.name <> " - draft")
     else
       redirect(socket, to: ~p"/accounts/profile/#{account.id}")
@@ -114,13 +114,11 @@ defmodule BlogAppWeb.AccountPageLive do
 
   defp apply_action(socket, :liked) do
     account = socket.assigns.account
-    current_account_id = get_current_account_id(socket.assigns.current_account)
+    current_account_id = socket.assigns.current_account_id
 
     socket
     |> assign(:articles, Articles.list_liked_articles_for_account(account.id))
-    |> assign(:set_article_id, nil)
     |> assign_article_count(account.id, current_account_id)
-    |> assign(:current_account_id, current_account_id)
     |> assign(:page_title, account.name <> " - liked")
   end
 
