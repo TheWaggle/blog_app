@@ -22,6 +22,7 @@ defmodule BlogAppWeb.AccountPageLive do
         <a href={~p"/accounts/profile/#{@account.id}/draft"} :if={@account.id == @current_account_id}>
           Draft
         </a>
+        <a href={~p"/accounts/profile/#{@account.id}/liked"}>Liked</a>
       </div>
 
       <div>
@@ -30,7 +31,7 @@ defmodule BlogAppWeb.AccountPageLive do
             <a href={~p"/accounts/profile/#{article.account.id}"}>
               <%= article.account.name %>
             </a>
-            <a href={~p"/articles/show/#{article.id}"} :if={@live_action == :info}>
+            <a href={~p"/articles/show/#{article.id}"} :if={@live_action in [:info, :liked]}>
               <div><%= article.submit_date %></div>
               <h2><%= article.title %></h2>
               <div>Liked：<%= Enum.count(article.likes) %></div>
@@ -47,6 +48,7 @@ defmodule BlogAppWeb.AccountPageLive do
               case @live_action do
                 :info -> "No articles"
                 :draft -> "No draft articles"
+                :liked -> "No liked articles"
               end
             %>
           </div>
@@ -71,8 +73,7 @@ defmodule BlogAppWeb.AccountPageLive do
 
   defp apply_action(socket, :info) do
     account = socket.assigns.account
-    current_account = socket.assigns.current_account
-    current_account_id = get_current_account_id(current_account)
+    current_account_id = get_current_account_id(socket.assigns.current_account)
 
     articles =
       Articles.list_articles_for_account(account.id, current_account_id)
@@ -86,18 +87,12 @@ defmodule BlogAppWeb.AccountPageLive do
 
   defp apply_action(socket, :draft) do
     account = socket.assigns.account
-    current_account = socket.assigns.current_account
-    current_account_id = get_current_account_id(current_account)
+    current_account_id = get_current_account_id(socket.assigns.current_account)
 
     if account.id == current_account_id do
-      articles_count =
-        current_account_id
-        |> Articles.list_articles_for_account(current_account_id)
-        |> Enum.count()
-
       socket
       |> assign(:articles, Articles.list_draft_articles_for_account(current_account_id))
-      |> assign(:articles_count, articles_count)
+      |> assign_article_count(account.id, current_account_id)
       |> assign(:current_account_id, current_account_id)
       |> assign(:page_title, account.name <> " - draft")
     else
@@ -105,7 +100,27 @@ defmodule BlogAppWeb.AccountPageLive do
     end
   end
 
+  defp apply_action(socket, :liked) do
+    account = socket.assigns.account
+    current_account_id = get_current_account_id(socket.assigns.current_account)
+
+    socket
+    |> assign(:articles, Articles.list_liked_articles_for_account(account.id))
+    |> assign_article_count(account.id, current_account_id)
+    |> assign(:current_account_id, current_account_id)
+    |> assign(:page_title, account.name <> " - liked")
+  end
+
   defp get_current_account_id(current_account) do
     Map.get(current_account || %{}, :id)
+  end
+
+  defp assign_article_count(socket, account_id, current_account_id) do
+    articles_count =
+      account_id
+      |> Articles.list_articles_for_account(current_account_id)
+      |> Enum.count()
+
+    assign(socket, :articles_count, articles_count)
   end
 end

@@ -39,6 +39,17 @@ defmodule BlogApp.Articles do
     |> Repo.all()
   end
 
+  def list_liked_articles_for_account(account_id) do
+    query =
+      from(a in Article,
+        join: l in assoc(a, :likes),
+        where: l.account_id == ^account_id,
+        preload: [:account, :likes]
+      )
+
+    Repo.all(query)
+  end
+
   def search_articles_by_keyword(keyword) do
     keyword = "%#{keyword}%"
 

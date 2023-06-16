@@ -26,6 +26,7 @@ defmodule BlogAppWeb.Router do
       live "/", ArticleLive.Summary, :summary
       live "/articles/show/:article_id", ArticleLive.Show, :show
       live "/accounts/profile/:account_id", AccountPageLive, :info
+      live "/accounts/profile/:account_id/liked", AccountPageLive, :liked
     end
   end
 
