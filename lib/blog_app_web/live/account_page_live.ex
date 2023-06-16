@@ -173,6 +173,15 @@ defmodule BlogAppWeb.AccountPageLive do
     assign(socket, :articles_count, articles_count)
   end
 
+  def handle_info({:update_profile, account}, socket) do
+    socket =
+      socket
+      |> put_flash(:info, "Account profile updated successfully")
+      |> redirect(to: ~p"/accounts/profile/#{account.id}")
+
+    {:noreply, socket}
+  end
+
   def handle_info({:update_email, account}, socket) do
     socket =
       socket

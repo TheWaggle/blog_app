@@ -95,6 +95,20 @@ defmodule BlogApp.Accounts do
 
   ## Settings
 
+  ## Profile
+
+  def change_account_profile(%Account{} = account, attrs \\ %{}) do
+    Account.profile_changeset(account, attrs)
+  end
+
+  def update_account_profile(account, attrs) do
+    account
+    |> Account.profile_changeset(attrs)
+    |> Repo.update()
+  end
+
+  ## Email
+
   @doc """
   Returns an `%Ecto.Changeset{}` for changing the account email.
 
