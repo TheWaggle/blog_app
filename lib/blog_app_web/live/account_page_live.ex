@@ -118,8 +118,6 @@ defmodule BlogAppWeb.AccountPageLive do
   end
 
   def handle_params(%{"account_id" => account_id}, _uri, socket) do
-    current_account_id = get_current_account_id(socket.assigns.current_account)
-
     socket =
       socket
       |> assign(:account, Accounts.get_account!(account_id))

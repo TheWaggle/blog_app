@@ -72,7 +72,7 @@ defmodule BlogAppWeb.ArticleLive.Form do
 
   defp save_article(socket, :edit, params) do
     case Articles.update_article(socket.assigns.article, params) do
-      {:ok, %Article{status: 0} = article} ->
+      {:ok, %Article{status: 0}} ->
         socket
         |> put_flash(:info, "Article saved successfully.")
         |> redirect(to: ~p"/accounts/profile/#{socket.assigns.current_account.id}/draft")
@@ -92,7 +92,7 @@ defmodule BlogAppWeb.ArticleLive.Form do
     params = Map.merge(params, %{"account_id" => current_account_id})
 
     case Articles.create_article(params) do
-      {:ok, %Article{status: 0} = article} ->
+      {:ok, %Article{status: 0}} ->
         socket
         |> put_flash(:info, "Article saved successfully.")
         |> redirect(to: ~p"/accounts/profile/#{current_account_id}/draft")
