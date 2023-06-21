@@ -5,7 +5,7 @@ defmodule BlogApp.MixProject do
     [
       app: :blog_app,
       version: "0.1.0",
-      elixir: "~> 1.14",
+      elixir: "~> 1.13.4",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
@@ -18,7 +18,7 @@ defmodule BlogApp.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {BlogApp.Application, []},
+      mod: {BlogApp, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
@@ -51,7 +51,9 @@ defmodule BlogApp.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+      {:desktop, "~> 1.5"},
+      {:wx, "~> 1.1", hex: :bridge, targets: [:android, :ios]}
     ]
   end
 
