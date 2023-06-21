@@ -16,7 +16,7 @@ params = [
       %Account{
         name: name,
         email: email,
-        hashed_password: Bcrypt.hash_pwd_salt(password),
+        hashed_password: Pbkdf2.hash_pwd_salt(password),
         confirmed_at: NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
       }
     )
