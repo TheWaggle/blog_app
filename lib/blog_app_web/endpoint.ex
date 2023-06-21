@@ -4,13 +4,22 @@ defmodule BlogAppWeb.Endpoint do
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
-  @session_options [
-    store: :ets,
-    key: "_blog_app_key",
-    table: :session
-    # signing_salt: "8tiAq5QM",
-    # same_site: "Lax"
-  ]
+  options =
+    if Mix.target() in [:desktop, :android, :ios] do
+      [
+        store: :ets,
+        key: "_blog_app_key",
+        table: :session
+      ]
+    else
+      [
+        store: :cookie,
+        key: "_blog_app_key",
+        signing_salt: "8tiAq5QM",
+        same_site: "Lax"
+      ]
+    end
+  @session_options options
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 

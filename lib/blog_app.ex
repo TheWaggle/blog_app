@@ -31,6 +31,7 @@ defmodule BlogApp do
         [
           app: @app,
           id: BlogAppWindow,
+          title: "BlogApp",
           size: {400, 800},
           url: "http://localhost:#{port}"
         ]

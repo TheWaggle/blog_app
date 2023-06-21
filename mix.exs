@@ -17,8 +17,19 @@ defmodule BlogApp.MixProject do
   #
   # Type `mix help compile.app` for more information.
   def application do
+    application(Mix.target())
+  end
+
+  def application(target) when target in [:desktop, :android, :ios] do
     [
       mod: {BlogApp, []},
+      extra_applications: [:logger, :runtime_tools]
+    ]
+  end
+
+  def application(_target) do
+    [
+      mod: {BlogApp.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end

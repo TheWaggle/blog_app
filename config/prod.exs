@@ -17,10 +17,6 @@ if Mix.target() == :android do
 end
 
 config :blog_app, BlogAppWeb.Endpoint,
-  http: [ip: {127, 0, 0, 1}, port: 0],
-  live_view: [signing_salt: "HMPMHcTJ"],
-  secret_key_base: :crypto.strong_rand_bytes(32),
-  server: true,
   cache_static_manifest: "priv/static/cache_manifest.json"
 
 # Configures Swoosh API Client
